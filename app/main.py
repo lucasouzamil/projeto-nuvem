@@ -122,7 +122,7 @@ def login(login_data: LoginData, session: Session = Depends(get_session)):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
     
-    if not verify_password(login_data.password, user.senha):
+    if not verify_password(login_data.senha, user.senha):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

@@ -18,4 +18,4 @@ class UserCreate(UserBase):
 
 class LoginData(SQLModel):
     email: str
-    password: str
+    senha: str
