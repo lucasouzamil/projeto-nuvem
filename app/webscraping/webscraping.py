@@ -9,7 +9,7 @@ def consulta_dolar():
         response.raise_for_status() 
         soup = BeautifulSoup(response.text, 'html.parser')
         dollar_value = soup.find('input', {'id': 'nacional'})['value']
-        return {"Dolar agora": dollar_value}
+        return {"Dolar agora (R$)": dollar_value}
 
     except requests.exceptions.HTTPError as err:
         return False

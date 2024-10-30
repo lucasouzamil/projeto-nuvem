@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException
 from models import *
 from sqlmodel import Session, create_engine, select
-import mysql.connector
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
@@ -22,7 +21,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
+
 mysql_url_db = f"mysql+mysqlconnector://{user}:{password}@{server}:{port}/{database_name}"
+
+
 enginedb = create_engine(mysql_url_db, echo=True)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -56,21 +58,6 @@ def decode_access_token(token: str):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-def create_database():
-    conn = mysql.connector.connect(
-        host=server,
-        user=user,
-        port=port,
-        password=password
-    )
-    cursor = conn.cursor()
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database_name}")
-    cursor.close()
-    conn.close()
-
-def create_tables():
-    SQLModel.metadata.create_all(enginedb)
-
 def get_session():
     with Session(enginedb) as session:
         yield session
@@ -87,8 +74,11 @@ def authenticate_user(login: str, senha: str, session: Session = Depends(get_ses
 
 @app.on_event("startup")
 def on_startup():
-    create_database()
-    create_tables()
+    try:
+        SQLModel.metadata.create_all(enginedb)
+    except Exception as e:
+        print("Erro ao conectar ao banco de dados:", e)
+        raise
 
 @app.post("/registrar", tags=['Register'])
 def create_user(user: UserCreate, session: Session = Depends(get_session)):
@@ -113,7 +103,6 @@ def create_user(user: UserCreate, session: Session = Depends(get_session)):
     return {
         "jwt": access_token
     }
-
 
 @app.post("/login", tags=["Login"])
 def login(login_data: LoginData, session: Session = Depends(get_session)):
