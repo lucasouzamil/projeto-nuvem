@@ -1,5 +1,5 @@
 
-# Projeto Nuvem - API de Cotação do Dólar
+# API de Cotação do Dólar
 
 **Autor**: [Lucas Lima](https://github.com/lucasouzamil)
 
