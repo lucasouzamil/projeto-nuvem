@@ -1,20 +1,21 @@
 
-# API de Cotação do Dólar
+# Visão geral
 
-**Autor**: [Lucas Lima](https://github.com/lucasouzamil)
-**[Site da documentação]()**
-
-## Descrição do Projeto
+### Descrição
 
 Este projeto é uma API RESTful desenvolvida para realizar o registro e autenticação de usuários, além de fornecer a cotação atual do dólar em reais. A API foi construída com FastAPI e utiliza JWT para autenticação, garantindo segurança no acesso ao endpoint de consulta. A consulta de cotação do dólar é realizada via web scraping da página [Dólar Hoje](https://dolarhoje.com/), enquanto o gerenciamento de usuários e suas informações é feito utilizando o banco de dados MySQL, executado em um container Docker para facilitar a portabilidade e consistência do ambiente.
-
-Vídeo de demonstração [aqui](https://youtu.be/AdvA5T4O6kY).
 
 ### Funcionalidades
 
 - Registro de novos usuários com criação de token JWT
 - Autenticação de usuários com retorno de token JWT
 - Consulta da cotação do dólar, acessível apenas para usuários autenticados
+
+Veja o vídeo de demonstração da API abaixo:
+
+<div style="position: relative; padding-top: 56.25%; /* 16:9 Aspect Ratio */ height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/AdvA5T4O6kY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div>
 
 ### Pré-requisitos
 
@@ -24,7 +25,7 @@ Vídeo de demonstração [aqui](https://youtu.be/AdvA5T4O6kY).
 
 ### 1. Crie um arquivo  `compose.yaml`
 
-No diretório de sua preferência, crie um arquivo chamado `compose.yaml` com o seguinte conteúdo (você também pode baixa-lo na raiz deste repositório):
+No diretório de sua preferência, crie um arquivo chamado `compose.yaml` com o seguinte conteúdo (você também pode [baixa-lo no repositório do projeto](https://github.com/lucasouzamil/projeto-nuvem/blob/main/compose.yaml)):
 
 ```yaml
 services:
@@ -59,9 +60,9 @@ services:
     restart: always
 ```
 
-### 2. Configurar variáveis personalizadas (opcional):
+### 2. Configurar variáveis personalizadas (opcional)
 
-Para usar variáveis personalizadas, crie um arquivo `.env` no mesmo diretório do `compose.yaml` (você também pode baixar o arquivo `.env.example` na raiz do repositório e renomea-lo). Adicione nele as variáveis com os valores desejados, por exemplo:
+Para usar variáveis personalizadas, crie um arquivo `.env` no mesmo diretório do `compose.yaml` (você também pode [baixar o arquivo `.env.example`](https://github.com/lucasouzamil/projeto-nuvem/blob/main/.env.example) no repositório do projeto e renomea-lo). Adicione nele as variáveis com os valores desejados, por exemplo:
 
 ```bash
 #Informações da conectividade com o DataBase
@@ -78,7 +79,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30 #minutos
 
 Isso permite que você altere as configurações sem modificar o compose.yaml.
 
-### 3. Iniciar os serviços com o Docker Compose:
+### 3. Iniciar os serviços com o Docker Compose
 
 No terminal, navegue até o diretório onde está o compose.yaml e execute o comando:
 
@@ -86,7 +87,7 @@ No terminal, navegue até o diretório onde está o compose.yaml e execute o com
 docker compose up -d
 ```
 
-### 4. Acessar a aplicação:
+### 4. Acessar a aplicação
 
 Com os serviços ativos, acesse a aplicação em `http://localhost:8000`. A documentação interativa da API estará disponível em [`http://localhost:8000/docs`](http://localhost:8000/docs).
 
@@ -94,85 +95,78 @@ Com os serviços ativos, acesse a aplicação em `http://localhost:8000`. A docu
 
 ## Documentação da API
 
-### Endpoints
-
-1. **POST /registrar**
+### 1. **POST /registrar**
 
    Registra um novo usuário e retorna um token JWT.
 
-    - **Request**: JSON
-      ```json
-      {
+- **Rquest**: JSON
+    
+    ```json
+    {
         "nome": "Disciplina Cloud",
         "email": "cloud@insper.edu.br",
         "senha": "cloud0"
-      }
-      ```
+    }
+    ```
 
-   - **Response**: JSON
-     ```json
-     {
-       "jwt": "<JWT gerado>"
-     }
-     ```
+- **Response**: JSON
 
-2. **POST /login**
+    ```json
+    {
+        "jwt": "<JWT gerado>"
+    }
+    ```
+
+### 2. **POST /login**
 
    Autentica o usuário e retorna um token JWT.
 
-   - **Request**: JSON
-     ```json
-     {
-       "email": "cloud@insper.edu.br",
-       "senha": "cloud0"
-     }
-     ```
+- **Request**: JSON
+    ```json
+    {
+        "email": "cloud@insper.edu.br",
+        "senha": "cloud0"
+    }
+    ```
 
-   - **Response**: JSON
-     ```json
-     {
-       "jwt": "<JWT gerado>"
-     }
-     ```
+- **Response**: JSON
+    ```json
+    {
+        "jwt": "<JWT gerado>"
+    }
+    ```
 
-3. **GET /consultar**
+### 3. **GET /consultar**
 
    Retorna a cotação atual do dólar em reais. Requer autenticação via JWT.
 
-   - **Header**:
-     ```
-     Authorization: Bearer <JWT>
-     ```
+- **Header**:
 
-   - **Response**: JSON
-     ```json
-     {
-       "Dólar agora (R$)": "<Cotação atual>"
-     }
-     ```
+    ```
+    Authorization: Bearer <JWT>
+    ```
+
+- **Response**: JSON
+    ```json
+    {
+        "Dólar agora (R$)": "<Cotação atual>"
+    }
+    ```
 
 ## Demonstração
 
-### Screenshot dos Endpoints Testados
+### 1. **POST /registrar**
 
-#### 1. **POST /registrar**
+![Screenshot POST /registrar](./img/teste-registrar.png)
 
-![Screenshot POST /registrar](./docs/img/teste-registrar.png)
+### 2. **POST /login**
 
-#### 2. **POST /login**
+![Screenshot POST /login](./img/teste-login.png)
 
-![Screenshot POST /login](./docs/img/teste-login.png)
+### 3. **GET /consultar**
 
-#### 3. **GET /consultar**
+![Screenshot *GET /consulta](./img/teste-consultar.png)
 
-![Screenshot *GET /consulta](./docs/img/teste-consultar.png)
+## Docker Hub
 
-### Vídeo de Execução
-
-Link para o vídeo de execução: [Vídeo de Demonstração](https://youtu.be/AdvA5T4O6kY)
-
-## Link do Docker Hub
-
-A imagem deste projeto está disponível no Docker Hub:
-
-[Imagem Docker do Projeto](https://hub.docker.com/r/lucasouzamil/projeto-api-consulta-dolar)
+A imagem deste projeto está disponível no Docker Hub: [Imagem Docker do Projeto](https://hub.docker.com/r/lucasouzamil/projeto-api-consulta-dolar)
