@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: lucasouzamil/projeto-api-consulta-dolar:v1.0
+          env:
+            - name: USER
+              value: "projeto"
+            - name: PASSWORD
+              value: "projeto"
+            - name: SERVER
+              value: "mysql-service"
+            - name: PORT
+              value: "3306"
+            - name: DATABASE_NAME
+              value: "projeto"
+            - name: SECRET_KEY
+              value: "key_super_secreta"
+            - name: ALGORITHM
+              value: "HS256"
+            - name: ACCESS_TOKEN_EXPIRE_MINUTES
+              value: "30"
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: api
